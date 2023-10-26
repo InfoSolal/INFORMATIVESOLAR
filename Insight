@@ -1,0 +1,13 @@
+from xgboost import XGBRegressor
+from sklearn.model_selection import GridSearchCV
+data = pd.read_csv('solar_data.csv')
+X = data[['sqft', 'roof_type', 'shading', 'orientation', 'tilt', 'location']]
+y = data['solar_size']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+params = {'n_estimators': [100, 500], 'max_depth': [3, 5]}
+
+grid_search = GridSearchCV(XGBRegressor(), params, scoring='neg_mean_squared_error', cv=5)
+grid_search.fit(X_train, y_train)
+
+model = grid_search.best_estimator_
